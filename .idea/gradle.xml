@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="GradleSettings">
+    <option name="linkedExternalProjectsSettings">
+      <GradleProjectSettings>
+        <option name="externalProjectPath" value="$PROJECT_DIR$/formulaBlu" />
+        <option name="modules">
+          <set>
+            <option value="$PROJECT_DIR$/formulaBlu" />
+            <option value="$PROJECT_DIR$/formulaBlu/api-gateway" />
+            <option value="$PROJECT_DIR$/formulaBlu/championship-api" />
+            <option value="$PROJECT_DIR$/formulaBlu/drivers-api" />
+            <option value="$PROJECT_DIR$/formulaBlu/eureka-server" />
+            <option value="$PROJECT_DIR$/formulaBlu/events-api" />
+            <option value="$PROJECT_DIR$/formulaBlu/results-api" />
+            <option value="$PROJECT_DIR$/formulaBlu/seasons-api" />
+            <option value="$PROJECT_DIR$/formulaBlu/teams-api" />
+            <option value="$PROJECT_DIR$/formulaBlu/tracks-api" />
+          </set>
+        </option>
+      </GradleProjectSettings>
+    </option>
+  </component>
+</project>

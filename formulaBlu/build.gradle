@@ -1,0 +1,129 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.4.3'
+	id 'io.spring.dependency-management' version '1.1.7'
+	id 'org.openapi.generator' version '7.0.1' apply false
+}
+
+group = 'com.example'
+version = '1.0-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(23)
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2024.0.0")
+}
+
+allprojects {
+	repositories {
+		mavenCentral()
+	}
+	
+	// Apply OpenAPI Generator plugin to all API modules
+	if (project.name.endsWith('-api')) {
+		apply plugin: 'org.openapi.generator'
+		
+		// Task to update OAS submodule
+		task updateOasSpec {
+			description = 'Updates OAS submodule to latest version'
+			group = 'oas'
+			doLast {
+				exec {
+					commandLine 'git', 'submodule', 'update', '--remote', '--merge'
+					workingDir = rootDir
+				}
+			}
+		}
+		
+		// Task to check if OAS spec exists
+		task checkOasSpec {
+			description = 'Checks if OAS specification exists for this API'
+			group = 'oas'
+			doLast {
+				def specFile = file("$rootDir/../OAS/apis/${project.name.replace('-api', '')}-api.yaml")
+				if (!specFile.exists()) {
+					throw new GradleException("OAS specification not found: ${specFile.absolutePath}")
+				}
+			}
+		}
+		
+		// Configure OpenAPI generation for Feign clients
+		openApiGenerate {
+			generatorName = "java"
+			inputSpec = "$rootDir/../OAS/apis/${project.name.replace('-api', '')}-api.yaml"
+			outputDir = "$buildDir/generated"
+			apiPackage = "com.formulablu.${project.name.replace('-api', '')}.api"
+			modelPackage = "com.formulablu.${project.name.replace('-api', '')}.model"
+			configOptions = [
+				dateLibrary: "java8",
+				library: "feign",
+				useFeign: "true",
+				useFeign10: "true",
+				feignVersion: "10.12",
+				useBeanValidation: "true",
+				useJakartaEe: "true",
+				performBeanValidation: "true",
+				useSpringBoot3: "true",
+				useSpringCloudOpenFeign: "true",
+				openApiNullable: "false",
+				serializationLibrary: "jackson",
+				bigDecimalAsString: "true",
+				useGzipFeature: "true",
+				useAbstractionForFiles: "true",
+				hideGenerationTimestamp: "true",
+				useOneOfInterfaces: "true",
+				legacyDiscriminatorBehavior: "false",
+				disallowAdditionalPropertiesIfNotPresent: "false",
+				useSingleRequestParameter: "true",
+				useTags: "true",
+				interfaceOnly: "true"
+			]
+		}
+		
+		// Ensure OAS is updated and spec exists before generation
+		tasks.openApiGenerate.dependsOn updateOasSpec, checkOasSpec
+		
+		// Add generated sources to main source set
+		sourceSets {
+			main {
+				java {
+					srcDirs += "$buildDir/generated/src/main/java"
+				}
+			}
+		}
+		
+		// Make compileJava depend on openApiGenerate (only for subprojects)
+		afterEvaluate {
+			if (project != rootProject && tasks.findByName('compileJava')) {
+				tasks.compileJava.dependsOn tasks.openApiGenerate
+			}
+		}
+	}
+}
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+// Root project doesn't need dependencies, they're defined in submodules
+bootJar {
+	enabled = false
+}
+
+jar {
+	enabled = false
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

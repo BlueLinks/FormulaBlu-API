@@ -1,0 +1,125 @@
+name: Update OAS and Build APIs
+
+on:
+    schedule:
+        # Check for OAS updates every hour
+        - cron: "0 * * * *"
+    workflow_dispatch:
+        inputs:
+            force_update:
+                description: "Force update OAS submodule"
+                required: false
+                default: "false"
+                type: boolean
+
+jobs:
+    update-oas:
+        runs-on: ubuntu-latest
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  token: ${{ secrets.GITHUB_TOKEN }}
+                  submodules: true
+                  fetch-depth: 0
+
+            - name: Update OAS submodule
+              run: |
+                  git submodule update --remote --merge
+                  git add OAS
+                  if git diff --staged --quiet; then
+                    echo "No OAS updates available"
+                  else
+                    git commit -m "Update OAS submodule to latest version"
+                    git push
+                  fi
+
+            - name: Check for changes
+              id: changes
+              run: |
+                  if git diff HEAD~1 HEAD --name-only | grep -q "OAS/"; then
+                    echo "oas_updated=true" >> $GITHUB_OUTPUT
+                  else
+                    echo "oas_updated=false" >> $GITHUB_OUTPUT
+                  fi
+
+    build-apis:
+        needs: update-oas
+        runs-on: ubuntu-latest
+        if: needs.update-oas.outputs.oas_updated == 'true' || github.event_name == 'workflow_dispatch'
+
+        strategy:
+            matrix:
+                api: [drivers-api, teams-api, tracks-api, races-api, seasons-api, events-api, results-api]
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: true
+
+            - name: Setup Java
+              uses: actions/setup-java@v4
+              with:
+                  java-version: "11"
+                  distribution: "temurin"
+
+            - name: Cache Gradle packages
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            - name: Build ${{ matrix.api }}
+              run: |
+                  cd formulaBlu
+                  ./gradlew :${{ matrix.api }}:build --no-daemon
+
+            - name: Upload build artifacts
+              uses: actions/upload-artifact@v4
+              with:
+                  name: ${{ matrix.api }}-build
+                  path: formulaBlu/${{ matrix.api }}/build/libs/
+                  retention-days: 7
+
+    test-integration:
+        needs: [update-oas, build-apis]
+        runs-on: ubuntu-latest
+        if: needs.update-oas.outputs.oas_updated == 'true' || github.event_name == 'workflow_dispatch'
+
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  submodules: true
+
+            - name: Setup Java
+              uses: actions/setup-java@v4
+              with:
+                  java-version: "11"
+                  distribution: "temurin"
+
+            - name: Cache Gradle packages
+              uses: actions/cache@v3
+              with:
+                  path: |
+                      ~/.gradle/caches
+                      ~/.gradle/wrapper
+                  key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+                  restore-keys: |
+                      ${{ runner.os }}-gradle-
+
+            - name: Run integration tests
+              run: |
+                  cd formulaBlu
+                  ./gradlew test --no-daemon
+
+            - name: Generate test report
+              uses: dorny/test-reporter@v1
+              if: success() || failure()
+              with:
+                  name: Gradle Tests
+                  path: formulaBlu/build/test-results/test/TEST-*.xml
+                  reporter: java-junit

@@ -1,0 +1,11 @@
+rootProject.name = 'formulaBlu'
+include 'eureka-server'
+include 'api-gateway'
+include 'drivers-api'
+include 'teams-api'
+include 'tracks-api'
+include 'seasons-api'
+include 'events-api'
+include 'results-api'
+include 'championship-api'
+

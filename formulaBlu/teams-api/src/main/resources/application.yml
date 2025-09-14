@@ -1,0 +1,22 @@
+server:
+    port: 8083
+
+spring:
+    application:
+        name: teams-api
+        datasource:
+            url: jdbc:postgresql://postgres-teams:5432/formula1_teams
+            username: postgres
+            password: password
+        jpa:
+            hibernate:
+                ddl-auto: update
+            show-sql: true
+            properties:
+                hibernate:
+                    dialect: org.hibernate.dialect.PostgreSQLDialect
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka/

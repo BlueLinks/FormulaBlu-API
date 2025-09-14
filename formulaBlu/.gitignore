@@ -1,0 +1,301 @@
+# FormulaBlu API - Comprehensive .gitignore
+# This file ensures sensitive data, build artifacts, and IDE files are not committed
+
+# ===========================================
+# SENSITIVE DATA & SECRETS
+# ===========================================
+*.env
+*.env.local
+*.env.development
+*.env.test
+*.env.production
+.env
+.env.*
+secrets/
+secrets.json
+application-secrets.yml
+application-secrets.yaml
+application-local.yml
+application-local.yaml
+application-dev.yml
+application-dev.yaml
+application-prod.yml
+application-prod.yaml
+config/secrets/
+**/secrets/**
+**/config/secrets/**
+
+# Database credentials and connection strings
+database.properties
+db.properties
+jdbc.properties
+
+# API Keys and tokens
+api-keys.properties
+tokens.properties
+*.key
+*.pem
+*.p12
+*.jks
+*.keystore
+*.truststore
+
+# ===========================================
+# BUILD ARTIFACTS & GRADLE
+# ===========================================
+HELP.md
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# Gradle cache and temporary files
+.gradle/
+gradle-app.setting
+!gradle-wrapper.jar
+!gradle-wrapper.properties
+.gradletasknamecache
+
+# ===========================================
+# DOCKER & CONTAINERIZATION
+# ===========================================
+# Docker build context
+.dockerignore
+docker-compose.override.yml
+docker-compose.local.yml
+docker-compose.dev.yml
+
+# Container logs
+*.log
+logs/
+**/logs/
+
+# ===========================================
+# JAVA SPECIFIC
+# ===========================================
+# Compiled class files
+*.class
+
+# Log files
+*.log
+*.log.*
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files
+*.jar
+*.war
+*.nar
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Virtual machine crash logs
+hs_err_pid*
+replay_pid*
+
+# ===========================================
+# IDE & EDITOR FILES
+# ===========================================
+
+### IntelliJ IDEA ###
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+!**/src/main/**/out/
+!**/src/test/**/out/
+
+# IntelliJ IDEA specific
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/dictionaries
+.idea/shelf
+.idea/usage.statistics.xml
+.idea/compiler.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/jsLibraryMappings.xml
+.idea/datasources.xml
+.idea/dataSources.ids
+.idea/sqlDataSources.xml
+.idea/dynamic.xml
+.idea/uiDesigner.xml
+.idea/dbnavigator.xml
+
+### Eclipse ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings/
+.springBeans
+.sts4-cache
+bin/
+!**/src/main/**/bin/
+!**/src/test/**/bin/
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+
+### VS Code ###
+.vscode/
+*.code-workspace
+
+### Sublime Text ###
+*.sublime-project
+*.sublime-workspace
+
+### Vim ###
+*.swp
+*.swo
+*~
+
+### Emacs ###
+*~
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+# ===========================================
+# OPERATING SYSTEM FILES
+# ===========================================
+
+### macOS ###
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+.AppleDB
+.AppleDesktop
+Network Trash Folder
+Temporary Items
+.apdisk
+
+### Windows ###
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+### Linux ###
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===========================================
+# TESTING & COVERAGE
+# ===========================================
+# Test results
+test-results/
+test-output/
+coverage/
+*.coverage
+.coverage
+.pytest_cache/
+htmlcov/
+
+# JUnit test results
+TEST-*.xml
+test-results.xml
+
+# ===========================================
+# TEMPORARY FILES
+# ===========================================
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.#*
+\#*#
+.#*
+
+# ===========================================
+# MISC
+# ===========================================
+# Backup files
+*.bak
+*.backup
+*.old
+
+# Archive files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# ===========================================
+# PROJECT SPECIFIC
+# ===========================================
+# OpenAPI generated files (if not using submodule)
+# Uncomment if you're not using the OAS submodule
+# generated/
+# openapi-generator/
+
+# Local development overrides
+application-local.yml
+application-local.yaml
+bootstrap-local.yml
+bootstrap-local.yaml
+
+# Kubernetes local development
+k8s-local/
+local-k8s/
+
+# Monitoring and observability
+prometheus-data/
+grafana-data/
+jaeger-data/
+
+# ===========================================
+# SECURITY SCANNING RESULTS
+# ===========================================
+# Security scan results (keep these out of version control)
+security-reports/
+vulnerability-reports/
+trivy-results.*
+snyk-results.*

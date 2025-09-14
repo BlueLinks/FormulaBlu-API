@@ -1,0 +1,36 @@
+server:
+    port: 8080
+
+spring:
+    application:
+        name: api-gateway
+    cloud:
+        gateway:
+            routes:
+                - id: races-api
+                  uri: lb://races-api
+                  predicates:
+                      - Path=/api/races/**
+                - id: drivers-api
+                  uri: lb://drivers-api
+                  predicates:
+                      - Path=/api/drivers/**
+                - id: teams-api
+                  uri: lb://teams-api
+                  predicates:
+                      - Path=/api/teams/**
+                - id: tracks-api
+                  uri: lb://tracks-api
+                  predicates:
+                      - Path=/api/tracks/**
+            globalcors:
+                cors-configurations:
+                    "[/**]":
+                        allowedOrigins: "*"
+                        allowedMethods: "*"
+                        allowedHeaders: "*"
+
+eureka:
+    client:
+        service-url:
+            defaultZone: http://localhost:8761/eureka/
