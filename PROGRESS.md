@@ -104,6 +104,9 @@ OAS/
 -   [x] Create API specifications for each microservice
 -   [x] Fix TypeSpec syntax issues for compatibility with TypeSpec 0.50.0
 -   [x] Fix GitHub workflow issues (deprecated actions, validation, error handling)
+-   [x] Update OAS submodule to latest version (v3) with complete API specifications
+-   [x] Verify Gradle OAS integration is working correctly
+-   [x] Test Java model generation from latest OAS specs
 -   [ ] Implement model sharing mechanism
 -   [ ] Set up Feign client generation
 -   [ ] Integrate OAS with microservices
